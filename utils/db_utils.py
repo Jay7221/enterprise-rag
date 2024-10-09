@@ -47,3 +47,8 @@ def store_text(text: str, metadata: dict) -> None:
             doc.metadata["key"] = value
     uuids = [str(uuid4()) for _ in range(len(docs))]
     vector_store.add_documents(documents=docs, ids=uuids)
+
+def get_departments(query):
+    with weaviate.connect_to_local() as client:
+        departments =  client.collections.get("Departments")
+        return [department.properties for department in departments.query.fetch_objects().objects]
