@@ -39,17 +39,14 @@ if page == "Ask a Question":
         # Take action based on feedback
         if feedback == '👍 Yes':
             st.success("Thanks for your feedback!")
-            # Code to record positive feedback
+            
         elif feedback == '👎 No':
             st.warning("Sorry to hear that. We'll work on improving.")
     # Only display the graph if the response is available and contains 'graph_data'
     if response and 'graph_data' in response:
         df = pd.DataFrame(response['graph_data'])
         st.line_chart(df)
-        # Ask for feedback (thumbs up or down)
 
-        # Code to record negative feedback
-# Page for uploading documents
 elif page == "Upload Document":
     st.title("Upload Document")
 
