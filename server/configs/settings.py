@@ -15,4 +15,4 @@ LLM_MODEL = os.getenv("LLM_MODEL", "gemini-pro")  # Default model name
 # Embeddings Model Configuration
 EMBEDDINGS_MODEL = os.getenv("EMBEDDINGS_MODEL", "models/text-embedding-004")  # Default embeddings model name
 
-CSV_FILE_PATH = os.getenv("CSV_FILE_PATH")
+CSV_FILE_PATH = (os.getenv("CSV_FILE_PATH") or './files')
