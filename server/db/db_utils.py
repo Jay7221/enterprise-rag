@@ -7,8 +7,9 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import weaviate
 
-from server.configs.settings import CHROMA_PATH, CHUNK_SIZE, CHUNK_OVERLAP, FETCH_K, MMR_K
+from server.configs.settings import CHROMA_PATH, CHUNK_SIZE, CHUNK_OVERLAP, FETCH_K, MMR_K, CSV_FILE_PATH
 from server.models.embeddings import embeddings
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -64,3 +65,13 @@ def get_department_list(query):
     except Exception as e:
         logger.error(f"Failed to retrieve departments: {str(e)}")
         raise
+
+def get_csv_file_names():
+    return os.listdir(CSV_FILE_PATH)
+
+def get_csv_file_paths():
+    return [os.path.join(CSV_FILE_PATH, filename) for filename in os.listdir(CSV_FILE_PATH)]
+
+if __name__ == "__main__":
+    print(get_csv_file_names())
+    print(get_csv_file_paths())

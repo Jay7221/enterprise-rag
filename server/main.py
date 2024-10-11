@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse
 from server.db.db_utils import store_document_chunks
-from server.chains.chain_utils import rag_chain
+from server.chains.qa import qa_chain
 from server.services.document_processing import extract_text_from_pdf
 import io
 import pandas as pd
@@ -37,15 +37,8 @@ async def upload_document(
 @app.post("/answer/")
 async def answer_query(query: dict) -> JSONResponse:
     """Endpoint to process a query and retrieve an answer."""
-    answer = rag_chain.invoke(query['query'])
+    answer = qa_chain.invoke({'query': query['query']})
     return JSONResponse(content={"answer": answer})
-    
-def upload_table(df: pd.DataFrame, name: str, description: str, department: str) -> None:
-    pass
-
-def upload_image(img, name: str, description: str, department: str) -> None:
-    pass
-
 
 if __name__ == "__main__":
    import uvicorn

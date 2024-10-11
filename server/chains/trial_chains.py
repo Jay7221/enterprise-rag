@@ -1,21 +1,13 @@
-from db_utils import retriever, get_departments
+from server.db.db_utils import retriever
 from langchain_core.runnables import RunnablePassthrough
 from langchain.prompts import PromptTemplate
 from langchain_google_genai import GoogleGenerativeAI
 from langchain_core.output_parsers import StrOutputParser
+from server.models.llm import llm
 
 # Function to format document content
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
-
-# Function to format department information
-def format_departments(departments):
-    formatted = "\n".join([f"- {dept['name']}: {dept['description']}" for dept in departments])
-    return formatted
-
-# Function to get formatted department information
-def get_formatted_departments():
-    return format_departments(get_departments())
 
 # Function to classify query types
 QUERY_TYPES = {
@@ -46,34 +38,6 @@ def get_csv_files(query):
 def get_csv_file_descriptions(query):
     return format_csv_file_names(get_csv_files(query))
 
-llm = GoogleGenerativeAI(model="gemini-pro")
-
-# Define prompt templates
-query_prompt = PromptTemplate.from_template("""
-Answer the below query on the basis of context provided.
-
-Query: 
-{query}
-
-Context:
-{context}
-
-Answer:
-""")
-
-department_prompt = PromptTemplate.from_template("""
-You are an AI that identifies which department is most related to a given query. 
-Based on the descriptions of departments, suggest the department that best matches the query.
-
-Departments:
-{departments}
-
-Query:
-{query}
-
-Department:
-""")
-
 query_classification_prompt = PromptTemplate.from_template("""
 Classify the below query into one of the query types. You need to return only the name of the query type, do not return anything else.
 
@@ -96,20 +60,6 @@ Files:
 Relevant Files: 
 """)
 
-# Chains for different functionalities
-rag_chain = (
-    {"context": retriever | format_docs, "query": RunnablePassthrough()}
-    | query_prompt
-    | llm
-    | StrOutputParser()
-)
-
-department_chain = (
-    {"departments": get_departments, "query": RunnablePassthrough()}
-    | department_prompt
-    | llm
-    | StrOutputParser()
-)
 
 query_classification_chain = (
     {"query_types" : get_query_types ,"query": RunnablePassthrough()}
@@ -128,17 +78,7 @@ document_selection_chain = (
 
 
 if __name__ == "__main__":
-
-    # Example invocations
-    print(rag_chain.invoke("What is the name of the book ?"))
-    print(rag_chain.invoke("What is the book about ?"))
-
-    print(department_chain.invoke("How do I reset my Windows PC ?"))
-
     print(query_classification_chain.invoke("Which team handles zoom dashboard integrations ?"))
     print(query_classification_chain.invoke("Which are the top 5 customers by percentage of sales ?"))
     print(query_classification_chain.invoke("What is the process for hiring a candidate ?"))
     print(query_classification_chain.invoke("Is it worth it to invest in EV sales to reduce pressure on Delhi units ?"))
-
-    print(document_selection_chain.invoke("What is the total failure rate for pipes section production line ?"))
-    print(document_selection_chain.invoke("Which are the top 5 best selling EV models in Delhi."))
