@@ -19,9 +19,14 @@ def get_formatted_departments():
 
 # Function to classify query types
 QUERY_TYPES = {
-    "Data Retrieval": "Involves retrieving or lookup of simple facts or data. There should be little to no processing involved. Eg: What is the name of company providing fire service.",
-    "Data Computation": "Involves numerical computation on some tables or numerical data to arrive on answer. Eg: Who are the top 5 most profitable customers based on sales from July to June.",
-    "Decision Making": "Involves complex multi-step thought process to arrive at an answer. Eg: What are the expected problems to be faced while increasing EV production of Delhi unit by 10 percent in next 4 months.",
+    "Data Retrieval": '''Involves retrieving or lookup of facts or data from text documents. Eg: 
+    What is the name of company providing fire service. 
+    What is the process to modify company logo.
+    ''',
+    "Data Computation": '''Involves numerical computation on some tables or numerical data to arrive on answer. Eg: 
+    Who are the top 5 most profitable customers based on sales from July to June.
+    Which department has highest profit to sales ratio in Delhi.
+    ''',
 }
 
 def get_query_types(query):
