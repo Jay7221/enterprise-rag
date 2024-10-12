@@ -1,12 +1,12 @@
 from .query_classification import query_classification_chain
 from .table_query import csv_agent
-from .chain_utils import rag_chain
+from .rag_chain import rag_chain
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables import RunnableLambda
 
 def route(info):
     if info['query_type'] == 'Data Retrieval':
-        return rag_chain.invoke(info['input'])
+        return rag_chain
     elif info['query_type'] == 'Data Computation':
         return csv_agent
 
