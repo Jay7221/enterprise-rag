@@ -1,9 +1,12 @@
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import JSONResponse
 from server.db.db_utils import store_document_chunks
 from server.chains.qa import qa_chain
 from server.services.document_processing import extract_text_from_pdf
 import io
+from io import BytesIO
+import os
+
 import pandas as pd
 
 app = FastAPI()
@@ -16,12 +19,30 @@ async def upload_document(
         department: str = Form(...),
 ) -> JSONResponse:
     """Endpoint to upload a document and store it in the vector store."""
-    header = await file.read(5)
+    filename = file.filename
+    file_extension = os.path.splitext(filename)[1].lower()
+    # Check for PDF by extension first
+    if file_extension == '.pdf':
+        header = await file.read(5)
+        if header.startswith(b'%PDF'):
+            content = await extract_text_from_pdf(file)
+        else:
+            raise HTTPException(status_code=400, detail="Invalid PDF file format")
 
-    if header.startswith(b'%PDF'):
-        content = await extract_text_from_pdf(file)
+    # Check for CSV file by extension
+    elif file_extension == '.csv':
+        file_content = await file.read()  # Read entire content of the file
+        file_like_object = BytesIO(file_content)  # Create a BytesIO object
+
+        # Use Pandas to read the CSV
+        try:
+            df = pd.read_csv(file_like_object)
+            df.to_csv('files/'+filename,index=False)
+            return JSONResponse(content={"status": "Document uploaded successfully"})
+        except Exception as e:
+            raise HTTPException(status_code=400, detail="Invalid CSV file format")
+
     else:
-        await file.seek(0)
         content = await file.read()
         content = content.decode("utf-8")
 
