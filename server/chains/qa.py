@@ -1,16 +1,18 @@
 from .query_classification import query_classification_chain
 from .table_query import csv_agent
-from .rag_chain import rag_chain
+from .chain_utils import rag_chain
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables import RunnableLambda
 
 def route(info):
     if info['query_type'] == 'Data Retrieval':
-        return rag_chain
+        return rag_chain.invoke(info['input'])
     elif info['query_type'] == 'Data Computation':
         return csv_agent
 
 def parse_output(info):
+    if isinstance(info,str):
+        return info
     if 'answer' in info.keys():
         return info['answer']
     if 'output' in info.keys():
