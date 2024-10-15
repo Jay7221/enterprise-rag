@@ -12,6 +12,10 @@ QUERY_TYPES = {
     Who are the top 5 most profitable customers based on sales from July to June.
     Which department has highest profit to sales ratio in Delhi.
     ''',
+    "Data Plotting": '''Involves plotting of data. This usually involves drawing a line graph, bar graph or pie chart. Eg:
+    Give me a pie chart of sales classified by shipped.
+    Give me a bar graph of sales by product type.
+    '''
 }
 
 def get_query_types():

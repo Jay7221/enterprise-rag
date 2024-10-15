@@ -3,12 +3,15 @@ from .table_query import csv_agent
 from .rag_chain import rag_chain
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables import RunnableLambda
+from .plotting_chain import plot_with_agent
 
 def route(info):
     if info['query_type'] == 'Data Retrieval':
         return rag_chain
     elif info['query_type'] == 'Data Computation':
         return csv_agent
+    elif info['query_type'] == "Data Plotting":
+        return plot_with_agent(info)
 
 def parse_output(info):
     if 'answer' in info.keys():
