@@ -24,18 +24,3 @@ def get_csv_file_names_and_descriptions(data):
     """Format CSV file information for display."""
     return "\n".join([f"{file_data['name']}:{file_data['description']}" for file_data in data])
 
-# Chains for different functionalities
-rag_chain = (
-    {"context": retriever | format_documents, "query": RunnablePassthrough()}
-    | query_prompt
-    | llm
-    | StrOutputParser()
-)
-
-department_chain = (
-    {"departments": get_department_list, "query": RunnablePassthrough()}
-    | department_prompt
-    | llm
-    | StrOutputParser()
-)
-

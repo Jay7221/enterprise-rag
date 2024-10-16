@@ -47,3 +47,13 @@ Files:
 
 Relevant Files: 
 """)
+
+
+plotting_prompt = PromptTemplate.from_template("""
+Draw the plot requested in the below query. Save the plot compulsorily as plot.png file. Do not save it anywhere else.
+
+Query: 
+{input}
+
+Answer:
+""")

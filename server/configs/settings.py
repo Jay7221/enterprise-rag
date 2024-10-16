@@ -10,7 +10,7 @@ FETCH_K = int(os.getenv("FETCH_K", 5))
 MMR_K = int(os.getenv("MMR_K", 3))
 
 # LLM Model Configuration
-LLM_MODEL = os.getenv("LLM_MODEL", "gemini-pro")  # Default model name
+LLM_MODEL = os.getenv("LLM_MODEL", "gemini-1.0-pro")  # Default model name
 
 # Embeddings Model Configuration
 EMBEDDINGS_MODEL = os.getenv("EMBEDDINGS_MODEL", "models/text-embedding-004")  # Default embeddings model name
