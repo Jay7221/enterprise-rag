@@ -2,10 +2,13 @@ import streamlit as st
 import requests
 import pandas as pd
 
+from PIL import Image
+from io import BytesIO
+
 # Function to send questions to the backend
 def ask_backend(question):
     response = requests.post('http://127.0.0.1:8000/answer/', json={'query': question})
-    return response.json()
+    return response
 
 # Upload documents to the backend
 def upload_document(uploaded_file, metadata):
@@ -42,7 +45,24 @@ if page == "Chat with AI":
     if st.button("Send"):
         if question:
             response = ask_backend(question)
-            answer = response.get('answer', "No answer received")
+            content_type=response.headers.get('Content-Type')
+            answer=None
+            if 'image' in content_type:  # Check if the content type is image
+                try:
+                    # Convert the response content to an image using PIL
+                    img = Image.open(BytesIO(response.content))
+                    answer='plot.png'
+                    # Display the image in Streamlit
+                    st.image(img, caption="Fetched Image from FastAPI", use_column_width=True)
+                except Exception as e:
+                    st.error(f"Error displaying image: {e}")
+        # Handle JSON responses
+            elif 'application/json' in content_type:
+                try:
+                    json_data = response.json()
+                except Exception as e:
+                    st.error(f"Error parsing JSON: {e}")
+                answer = json_data.get('answer', "No answer received")
 
             # Store the question and answer in session state
             st.session_state['chat_history'].append((question, answer))

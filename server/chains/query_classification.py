@@ -38,4 +38,4 @@ query_classification_chain = (
 )
 
 if __name__ == "__main__":
-    print(query_classification_chain.invoke({"query": "What is average sales ?"}))
+    print(query_classification_chain.invoke({"query": "What is the average usage based on recent data??"}))
