@@ -1,7 +1,8 @@
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Response
 from fastapi.responses import JSONResponse
 from server.db.db_utils import store_document_chunks
 from server.chains.qa import qa_chain
+from fastapi.responses import FileResponse
 from server.services.document_processing import extract_text_from_pdf
 import io
 from io import BytesIO
@@ -59,6 +60,11 @@ async def upload_document(
 async def answer_query(query: dict) -> JSONResponse:
     """Endpoint to process a query and retrieve an answer."""
     answer = qa_chain.invoke({'query': query['query']})
+    image_path = "plot.png"
+    print(f'answer is {answer}')
+    if 'plot.png' in answer and os.path.exists(image_path):
+        # Ensure the file exists
+        return FileResponse(image_path, media_type="image/png", filename="image.png")
     return JSONResponse(content={"answer": answer})
 
 if __name__ == "__main__":

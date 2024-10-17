@@ -11,7 +11,7 @@ def route(info):
     elif info['query_type'] == 'Data Computation':
         return csv_agent
     elif info['query_type'] == "Data Plotting":
-        return plot_with_agent(info)
+        return plot_with_agent({'input':info['input']})
 
 def parse_output(info):
     if isinstance(info,str):
